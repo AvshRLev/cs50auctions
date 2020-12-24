@@ -15,6 +15,9 @@ class Listing(models.Model):
     listing_category = models.CharField(blank=True, max_length=32, null=True)
     active = models.BooleanField(blank=True, null=True) 
 
+    def __str__(self):
+        return f"{self.listing_title} By {self.user}"
+
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid_on_listing")

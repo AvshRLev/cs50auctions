@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing
+from .models import User, Listing, Bid
 
 
 class NewListingForm(forms.Form):
@@ -116,23 +116,60 @@ def listing(request, listing):
         "listing": listing
     })
 
+@login_required
 def bid(request, listing):
-    listin = Listing.objects.get(listing_title=listing)
-    current_bid = listin.current_bid
+    listing = Listing.objects.get(listing_title=listing)
+    current_bid = listing.current_bid
     if request.method == "POST":
         form = NewBid(request.POST)
         if form.is_valid():
             new_bid = form.cleaned_data['bid']
-            if new_bid <= current_bid:
-                message = "Bid must be higher than starting bid or highest bid!"
+            if new_bid < current_bid:
+                message = "Bid must be higher than current bid."
                 return render(request, "auctions/bid.html", {
-                    "message": message,
-                    "form": form
+                    "listing": listing,
+                    "form": NewBid(),
+                    "current_bid": current_bid,
+                    "message": message
+                })
+            else:
+                user = request.user
+                bid_to_save = Bid(user=user, listing=listing, amount=new_bid)
+                bid_to_save.save()
+                update_listing = Listing.objects.get(listing_title=listing.listing_title)
+                update_listing.current_bid = new_bid
+                update_listing.save()
+                return render(request, "auctions/listing.html", {
+                    "listing": listing
                 })
     return render(request, "auctions/bid.html", {
-        "current_bid": current_bid,
-        "form": NewBid()
+        "listing": listing,
+        "form": NewBid(),
+        "current_bid": current_bid
     })
+   
+   
+   
+   
+   
+   
+   
+    # listin = Listing.objects.get(listing_title=listing)
+    # current_bid = listin.current_bid
+    # if request.method == "POST":
+    #     form = NewBid(request.POST)
+    #     if form.is_valid():
+    #         new_bid = form.cleaned_data['bid']
+    #         if new_bid <= current_bid:
+    #             message = "Bid must be higher than starting bid or highest bid!"
+    #             return render(request, "auctions/bid.html", {
+    #                 "message": message,
+    #                 "form": form
+    #             })
+    # return render(request, "auctions/bid.html", {
+    #     "current_bid": current_bid,
+    #     "form": NewBid()
+    # })
 
 # def new_bid(request, current_bid):
 #     if request.method == "POST":
