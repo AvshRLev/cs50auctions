@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.listing_title | capfirst }}</h2>
+    {% if listing.listing_category %}
+        <p>{{ listing.listing_category }}</p>
+    {% endif %}
+    <p>Description: {{ listing.listing_description }}</p>
+    <p>Current price: {{ listing.starting_bid }}</p>
+    <a href="{% url 'bid_listing' listing.listing_title  %}">Place a Higher Bid</a>
+    {% if listing.listing_image_url %}
+        <img src="{{ listing.listing_image_url }} " width="400px">
+    {% endif %}   
+{% endblock %}
