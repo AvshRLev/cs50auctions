@@ -139,9 +139,11 @@ def bid(request, listing):
                 update_listing = Listing.objects.get(listing_title=listing.listing_title)
                 update_listing.current_bid = new_bid
                 update_listing.save()
+                Listing.refresh_from_db(listing)
                 return render(request, "auctions/listing.html", {
                     "listing": listing
                 })
+    Listing.refresh_from_db(listing)            
     return render(request, "auctions/bid.html", {
         "listing": listing,
         "form": NewBid(),

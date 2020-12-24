@@ -6,9 +6,12 @@
         <p>{{ listing.listing_category }}</p>
     {% endif %}
     <p>Description: {{ listing.listing_description }}</p>
-    <p>Current price: {{ listing.current_bid }}</p>
-    <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+    <div>
+        Current price: {{ listing.current_bid }}
+        <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+    </div>
     {% if listing.listing_image_url %}
+        <br>
         <img src="{{ listing.listing_image_url }} " width="400px">
     {% endif %}   
 {% endblock %}
