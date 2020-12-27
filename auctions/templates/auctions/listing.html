@@ -2,15 +2,23 @@
 
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
+    <h5>Created by {{ listing.user }}</h5>
     {% if user == listing.user %}
-        <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
+        {% if listing.active == True %}
+            <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
+        {% endif %}
     {% endif %}
+    <strong>{{ message }}</strong>
     {% if listing.listing_category %}
         <p>{{ listing.listing_category }}</p>
     {% endif %}
     <p>Description: {{ listing.listing_description }}</p>
     <div>
-        Current price: {{ listing.current_bid }}
+        {% if listing.active == True %}
+            Current price: {{ listing.current_bid }}
+        {% else %}
+            Final price: {{ listing.current_bid }}
+        {% endif %}
         {% if listing.active == True %}
             <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
         {% else %}

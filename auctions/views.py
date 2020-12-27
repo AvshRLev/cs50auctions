@@ -97,13 +97,14 @@ def create(request):
             image_url = form.cleaned_data['image_url']
             category = form.cleaned_data['category']
             active = form.cleaned_data['active']
+            highest_bidder = user
             if Listing.objects.filter(listing_title=title).exists():
                 return render(request, "auctions/create.html", {
                     "form": form,
                     "message": "A Listing with that name already exists, try naming it differently."
                 })
             else:
-                listing = Listing(user= user, listing_title= title, listing_description= description, starting_bid= starting_bid, listing_image_url= image_url, listing_category= category, active= active, current_bid=current_bid)
+                listing = Listing(user= user, listing_title= title, listing_description= description, starting_bid= starting_bid, listing_image_url= image_url, listing_category= category, active= active, current_bid=current_bid, highest_bidder=highest_bidder)
                 listing.save()
                 return render(request, "auctions/index.html", {
                     "active_listings": [listing for listing in Listing.objects.all().filter(active=True) ]
@@ -117,6 +118,14 @@ def create(request):
 def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     user = request.user
+    Listing.refresh_from_db(listing)  
+    if listing.winner == user:
+        message = "Congratulations you are the winner of this auction"
+        return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "user": user,
+        "message": message
+        })
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "user": user
@@ -161,10 +170,12 @@ def bid(request, listing):
 def close_auction(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     update_listing = Listing.objects.get(listing_title=listing.listing_title)
-    update_listing.winner = update_listing.highest_bidder
+    update_listing.winner = listing.highest_bidder
     update_listing.active = False
     update_listing.save()
+    Listing.refresh_from_db(listing)  
     return render(request, "auctions/index.html", {
-        "active_listings": [listing for listing in Listing.objects.all().filter(active=True) ]
+        "active_listings": [listing for listing in Listing.objects.all().filter(active=True) ],
+        "winner": update_listing.winner
     })
    
