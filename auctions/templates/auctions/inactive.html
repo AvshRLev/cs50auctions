@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Inactive Listings</h2>
+    {% for listing in inactive_listings %}
+        <hr>
+        <a href="{% url 'listing' listing.listing_title %}"><h2>{{ listing.listing_title | capfirst }}</h2></a>
+        {% if listing.listing_category %}
+            <p>{{ listing.listing_category }}</p>
+        {% endif %}
+        <p>Description: {{ listing.listing_description }}</p>
+        <p>Final price: {{ listing.current_bid }}</p>
+        
+        {% if listing.listing_image_url %}
+            <img src="{{ listing.listing_image_url }}" width="400px">
+        {% endif %}
+        <br><br><br>
+    {% empty %}
+        <p>No inactive listings</p>
+    {% endfor %}
+    
+    
+{% endblock %}

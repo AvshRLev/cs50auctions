@@ -2,6 +2,9 @@
 
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
+    {% if user == listing.user %}
+        <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
+    {% endif %}
     {% if listing.listing_category %}
         <p>{{ listing.listing_category }}</p>
     {% endif %}

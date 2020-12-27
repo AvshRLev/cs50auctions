@@ -27,6 +27,12 @@ def index(request):
     })
 
 
+def inactive(request):
+    return render(request, "auctions/inactive.html", {
+        "inactive_listings": [listing for listing in Listing.objects.all().filter(active=False) ]
+    })
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -110,8 +116,10 @@ def create(request):
 @login_required
 def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
+    user = request.user
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "user": user
     })
 
 @login_required
@@ -136,6 +144,7 @@ def bid(request, listing):
                 bid_to_save.save()
                 update_listing = Listing.objects.get(listing_title=listing.listing_title)
                 update_listing.current_bid = new_bid
+                update_listing.highest_bidder = user
                 update_listing.save()
                 Listing.refresh_from_db(listing)
                 return render(request, "auctions/listing.html", {
@@ -146,5 +155,16 @@ def bid(request, listing):
         "listing": listing,
         "form": NewBid(),
         "current_bid": current_bid
+    })
+
+
+def close_auction(request, listing):
+    listing = Listing.objects.get(listing_title=listing)
+    update_listing = Listing.objects.get(listing_title=listing.listing_title)
+    update_listing.winner = update_listing.highest_bidder
+    update_listing.active = False
+    update_listing.save()
+    return render(request, "auctions/index.html", {
+        "active_listings": [listing for listing in Listing.objects.all().filter(active=True) ]
     })
    

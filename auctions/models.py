@@ -13,8 +13,9 @@ class Listing(models.Model):
     current_bid = models.IntegerField()
     listing_image_url = models.URLField(blank=True, null=True)
     listing_category = models.CharField(blank=True, max_length=32, null=True)
-    active = models.BooleanField(blank=True, null=True) 
-
+    active = models.BooleanField(blank=True, null=True)
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_winner")
+    highest_bidder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="highest_bidder")
     def __str__(self):
         return f"{self.listing_title} By {self.user}"
 
