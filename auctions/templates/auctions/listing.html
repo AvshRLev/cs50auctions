@@ -8,7 +8,11 @@
     <p>Description: {{ listing.listing_description }}</p>
     <div>
         Current price: {{ listing.current_bid }}
-        <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+        {% if listing.active == True %}
+            <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+        {% else %}
+            <strong>This listing is no longer active</strong>
+        {% endif %}
     </div>
     {% if listing.listing_image_url %}
         <br>

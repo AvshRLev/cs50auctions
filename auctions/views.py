@@ -18,9 +18,7 @@ class NewListingForm(forms.Form):
     active = forms.BooleanField(required=False, widget=forms.HiddenInput(), initial=True)
 
 class NewBid(forms.Form):
-    # current_bid = forms.IntegerField(widget=forms.HiddenInput())
     bid = forms.IntegerField(widget=forms.TextInput(attrs={'class' : 'form-control'}))
-
 
 
 def index(request):
@@ -150,39 +148,3 @@ def bid(request, listing):
         "current_bid": current_bid
     })
    
-   
-   
-   
-   
-   
-   
-    # listin = Listing.objects.get(listing_title=listing)
-    # current_bid = listin.current_bid
-    # if request.method == "POST":
-    #     form = NewBid(request.POST)
-    #     if form.is_valid():
-    #         new_bid = form.cleaned_data['bid']
-    #         if new_bid <= current_bid:
-    #             message = "Bid must be higher than starting bid or highest bid!"
-    #             return render(request, "auctions/bid.html", {
-    #                 "message": message,
-    #                 "form": form
-    #             })
-    # return render(request, "auctions/bid.html", {
-    #     "current_bid": current_bid,
-    #     "form": NewBid()
-    # })
-
-# def new_bid(request, current_bid):
-#     if request.method == "POST":
-#         form = NewBid(request.POST)
-#         if form.is_valid():
-#             new_bid = form.cleaned_data['bid']
-#             if new_bid <= current_bid:
-#                 message = "Bid must be higher than starting bid or highest bid!"
-#                 return render(request, "auctions/bid.html", {
-#                     "message": message,
-#                     "form": form
-#                 })
-
-
