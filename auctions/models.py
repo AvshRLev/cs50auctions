@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    #watchlist = models.ManyToManyField(Listing, blank=True, related_name="watchlist")
     pass
 
 class Listing(models.Model):
@@ -16,6 +17,8 @@ class Listing(models.Model):
     active = models.BooleanField(blank=True, null=True)
     winner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="listing_winner")
     highest_bidder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="highest_bidder")
+
+
     def __str__(self):
         return f"{self.listing_title} By {self.user}"
 
@@ -27,4 +30,13 @@ class Bid(models.Model):
     def __str__(self):
         return f"A Bid for {self.amount} By {self.user} on {self.listing}"
 
-    
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    on_watchlist = models.BooleanField(blank=True, null=True, default=False)
+
+    def __str__(self):
+        if self.on_watchlist == True:
+            return f"{self.listing} is on {self.user}'s watchlist"
+        else:
+            return f"{self.listing} is not on {self.user}'s watchlist"
