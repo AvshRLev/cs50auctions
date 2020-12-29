@@ -118,21 +118,17 @@ def create(request):
 def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     user = request.user
-    watchlist = Watchlist.objects.get(user=user, listing=listing)
-    on_watchlist = watchlist.on_watchlist
     Listing.refresh_from_db(listing)  
     if listing.winner == user:
         message = "Congratulations you are the winner of this auction"
         return render(request, "auctions/listing.html", {
         "listing": listing,
         "user": user,
-        "message": message,
-        "on_watchlist": on_watchlist,
+        "message": message
         })
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "user": user,
-        "on_watchlist": on_watchlist,
+        "user": user
     })
 
 @login_required
@@ -182,8 +178,4 @@ def close_auction(request, listing):
         "active_listings": [listing for listing in Listing.objects.all().filter(active=True) ],
         "winner": update_listing.winner
     })
-
-
-def watchlist(request, listing):
-    return HttpResponseRedirect(reverse("listing"))
    

@@ -3,12 +3,6 @@
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
     <h5>Created by {{ listing.user }}</h5>
-    {% if on_watchlist == True %}
-        <span class="badge badge-light">Watchlist</span>
-        <a href="{% url 'watchlist' listing.listing_title %}">Remove from watchlist</a>
-    {% else %}
-        <a href="{% url 'watchlist' listing.listing_title %}">Add to watchlist</a>
-    {% endif %}
     {% if user == listing.user %}
         {% if listing.active == True %}
             <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
