@@ -33,7 +33,7 @@ class Bid(models.Model):
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    on_watchlist = models.BooleanField(blank=True, null=True, default=False)
+    on_watchlist = models.BooleanField(null=True, default=False)
 
     def __str__(self):
         if self.on_watchlist == True:
