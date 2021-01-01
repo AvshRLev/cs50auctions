@@ -3,10 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-<<<<<<< HEAD
-=======
     # watchlist = models.ManyToManyField(Listing, blank=True, related_name="watchlist")
->>>>>>> tmp
     pass
 
 class Listing(models.Model):
@@ -32,9 +29,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"A Bid for {self.amount} By {self.user} on {self.listing}"
 
-<<<<<<< HEAD
-    
-=======
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
@@ -50,4 +44,3 @@ class Watchlist(models.Model):
             return f"{self.listing} is on {self.user}'s watchlist"
         else:
             return f"{self.listing} is not on {self.user}'s watchlist"
->>>>>>> tmp
