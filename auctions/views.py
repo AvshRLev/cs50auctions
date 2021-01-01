@@ -3,10 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, models
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Watchlist
 
 
 class NewListingForm(forms.Form):
@@ -118,6 +118,16 @@ def create(request):
 def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     user = request.user
+    watchlist = Watchlist.objects.all().filter(user=user, listing=listing)
+    if watchlist:
+        on_watchlist_id = watchlist[0].id
+        on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
+    else:
+        watchlist = Watchlist.create(user, listing, False)
+        watchlist.save()
+        watchlist = Watchlist.objects.all().filter(user=user, listing=listing)
+        on_watchlist_id = watchlist[0].id
+        on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
     Listing.refresh_from_db(listing)  
     if listing.winner == user:
         message = "Congratulations you are the winner of this auction"
@@ -125,12 +135,12 @@ def listing(request, listing):
         "listing": listing,
         "user": user,
         "message": message,
-        "on_watchlist": on_watchlist,
+        "on_watchlist": on_watchlist.on_watchlist,
         })
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "user": user,
-        "on_watchlist": on_watchlist,
+        "on_watchlist": on_watchlist.on_watchlist,
     })
 
 @login_required
@@ -183,5 +193,16 @@ def close_auction(request, listing):
 
 
 def watchlist(request, listing):
-    return HttpResponseRedirect(reverse("listing"))
+    the_listing = Listing.objects.get(listing_title=listing)
+    user = request.user
+    watchlist = Watchlist.objects.all().filter(listing=the_listing, user=user)
+    on_watchlist_id = watchlist[0].id
+    on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
+    if on_watchlist.on_watchlist == True:
+        on_watchlist.on_watchlist = False
+        on_watchlist.save()
+    elif on_watchlist.on_watchlist == False:
+        on_watchlist.on_watchlist = True
+        on_watchlist.save()
+    return redirect('listing', listing=listing)
    
