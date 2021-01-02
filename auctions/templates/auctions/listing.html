@@ -2,13 +2,40 @@
 
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
+    <h5>Created by {{ listing.user }}</h5>
+    <h1>{{ on_watchlist }}</h1>
+    {% if on_watchlist == True %}
+        <span class="badge badge-light">Watchlist</span>
+        <a href="{% url 'watchlist' listing.listing_title %}">Remove from watchlist</a>
+        <br>
+    {% else %}
+        <a href="{% url 'watchlist' listing.listing_title %}">Add to watchlist</a>
+        <br>
+    {% endif %}
+    {% if user == listing.user %}
+        {% if listing.active == True %}
+            <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
+        {% endif %}
+    {% endif %}
+    <strong>{{ message }}</strong>
     {% if listing.listing_category %}
         <p>{{ listing.listing_category }}</p>
     {% endif %}
     <p>Description: {{ listing.listing_description }}</p>
-    <p>Current price: {{ listing.starting_bid }}</p>
-    <a href="{% url 'bid_listing' listing.listing_title  %}">Place a Higher Bid</a>
+    <div>
+        {% if listing.active == True %}
+            Current price: {{ listing.current_bid }}
+        {% else %}
+            Final price: {{ listing.current_bid }}
+        {% endif %}
+        {% if listing.active == True %}
+            <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+        {% else %}
+            <strong>This listing is no longer active</strong>
+        {% endif %}
+    </div>
     {% if listing.listing_image_url %}
+        <br>
         <img src="{{ listing.listing_image_url }} " width="400px">
     {% endif %}   
 {% endblock %}

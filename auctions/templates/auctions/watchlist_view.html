@@ -1,8 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-    {% for listing in active_listings %}
+    {% for listing in var %}
         <hr>
         <a href="{% url 'listing' listing.listing_title %}"><h2>{{ listing.listing_title | capfirst }}</h2></a>
         {% if listing.listing_category %}
@@ -16,8 +15,6 @@
         {% endif %}
         <br><br><br>
     {% empty %}
-        <p>No active listings</p>
+        <p>No listings on watchlist</p>
     {% endfor %}
-    
-    {{ winner }}
 {% endblock %}

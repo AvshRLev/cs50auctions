@@ -3,7 +3,8 @@
 {% block body %}
 <strong>{{ message }} </strong>    
 <p>Current price: {{ current_bid }}</p>
-    <form action="{% url 'listing' %}" method="POST" class="form-group">
+<p>{{ listing.listing_title }}</p>
+    <form action="{% url 'bid_listing' listing.listing_title %}" method="POST" class="form-group">
         {% csrf_token %}
         {{ form }}
         <input type="submit">
