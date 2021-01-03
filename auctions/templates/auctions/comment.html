@@ -1,0 +1,11 @@
+{% block body %}
+<strong>{{ message }} </strong>    
+<p>{{ listing.listing_title }}</p>
+<img src="{{ listing.listing_image_url }}" width="200px">
+<br><br>
+    <form action="{% url 'comment' listing.listing_title %}" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+    </form>
+{% endblock %}

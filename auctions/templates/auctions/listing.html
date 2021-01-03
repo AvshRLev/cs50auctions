@@ -37,5 +37,13 @@
     {% if listing.listing_image_url %}
         <br>
         <img src="{{ listing.listing_image_url }} " width="400px">
-    {% endif %}   
+    {% endif %} 
+    <br>
+    <h2>Comments:</h2>
+    <br> 
+    {% for comment in comments %}
+        {{ comment.user }}: {{ comment.comment }}
+        <br>
+    {% endfor %}
+    <a href="{% url 'comment' listing.listing_title %}">Add a comment</a>
 {% endblock %}

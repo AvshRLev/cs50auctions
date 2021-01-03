@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Listing, Bid, Watchlist
+from .models import User, Listing, Bid, Watchlist, Comment
 
 
 class NewListingForm(forms.Form):
@@ -19,6 +19,9 @@ class NewListingForm(forms.Form):
 
 class NewBid(forms.Form):
     bid = forms.IntegerField(widget=forms.TextInput(attrs={'class' : 'form-control'}))
+
+class NewComment(forms.Form):
+    comment = forms.CharField(widget=forms.Textarea(attrs={'class' : 'form-control'}))
 
 
 def index(request):
@@ -119,6 +122,7 @@ def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     user = request.user
     watchlist = Watchlist.objects.all().filter(user=user, listing=listing)
+    comments = Comment.objects.all()
     if watchlist:
         on_watchlist_id = watchlist[0].id
         on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
@@ -128,6 +132,7 @@ def listing(request, listing):
         watchlist = Watchlist.objects.all().filter(user=user, listing=listing)
         on_watchlist_id = watchlist[0].id
         on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
+        
     Listing.refresh_from_db(listing)  
     if listing.winner == user:
         message = "Congratulations you are the winner of this auction"
@@ -136,11 +141,13 @@ def listing(request, listing):
         "user": user,
         "message": message,
         "on_watchlist": on_watchlist.on_watchlist,
+        "comments": comments,
         })
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "user": user,
         "on_watchlist": on_watchlist.on_watchlist,
+        "comments": comments,
     })
 
 @login_required
@@ -169,12 +176,31 @@ def bid(request, listing):
                 update_listing.save()
                 Listing.refresh_from_db(listing)
                 return redirect('listing', listing=listing.listing_title)
+    
     Listing.refresh_from_db(listing)            
     return render(request, "auctions/bid.html", {
         "listing": listing,
         "form": NewBid(),
         "current_bid": current_bid
     })
+
+
+def comment(request, listing):
+    listing = Listing.objects.get(listing_title=listing)
+    if request.method == "POST":
+        form = NewComment(request.POST)
+        if form.is_valid():
+            comment = form.cleaned_data['comment']
+            user = request.user
+            comment_to_save = Comment(user=user, listing=listing, comment=comment)
+            comment_to_save.save()
+            return redirect('listing', listing=listing.listing_title)
+
+    else:   
+        return render(request, "auctions/comment.html", {
+            "listing":listing,
+            "form": NewComment()
+        })
 
 
 def close_auction(request, listing):
@@ -216,4 +242,4 @@ def watchlist_view(request):
         
     })
 
-    
+
