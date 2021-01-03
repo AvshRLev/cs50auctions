@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    {% for listing in var %}
+    {% for listing in watchlist %}
         <hr>
         <a href="{% url 'listing' listing.listing_title %}"><h2>{{ listing.listing_title | capfirst }}</h2></a>
         {% if listing.listing_category %}

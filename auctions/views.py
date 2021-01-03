@@ -168,9 +168,7 @@ def bid(request, listing):
                 update_listing.highest_bidder = user
                 update_listing.save()
                 Listing.refresh_from_db(listing)
-                return render(request, "auctions/listing.html", {
-                    "listing": listing
-                })
+                return redirect('listing', listing=listing.listing_title)
     Listing.refresh_from_db(listing)            
     return render(request, "auctions/bid.html", {
         "listing": listing,
@@ -210,12 +208,11 @@ def watchlist(request, listing):
 def watchlist_view(request):
     """
     A view that shows all of the items on the current user's watchlist
-    [listing for listing in Listing.objects.all().filter(active=True) ]
     """
     user = request.user
     listed_in_watchlist = Watchlist.objects.all().filter(user=user, on_watchlist=True).values_list('listing', flat=True)
     return render(request, "auctions/watchlist_view.html", {
-        "var": [listing for listing in Listing.objects.all().filter(id__in=listed_in_watchlist)]
+        "watchlist": [listing for listing in Listing.objects.all().filter(id__in=listed_in_watchlist)]
         
     })
 
