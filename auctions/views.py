@@ -36,6 +36,27 @@ def inactive(request):
     })
 
 
+def categories(request):
+    """
+    A function that displays links to all listing categories avaliable 
+    """
+    categories = Listing.objects.values('listing_category').distinct().exclude(listing_category__exact='')
+    return render(request, "auctions/categories.html", {
+    "categories": categories
+})  
+
+
+def category_view(request, category):
+    '''
+    A function that returns a list of all listings under a specific category    
+    '''
+    return render(request, "auctions/category_view.html", {
+        "category": category, 
+        "category_listings": [listing for listing in Listing.objects.all().filter(listing_category=category) ]
+    })
+
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -241,5 +262,7 @@ def watchlist_view(request):
         "watchlist": [listing for listing in Listing.objects.all().filter(id__in=listed_in_watchlist)]
         
     })
+
+
 
 

@@ -2,15 +2,24 @@
 
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
-    <h5>Created by {{ listing.user }}</h5>
-    <h1>{{ on_watchlist }}</h1>
     {% if on_watchlist == True %}
-        <span class="badge badge-light">Watchlist</span>
-        <a href="{% url 'watchlist' listing.listing_title %}">Remove from watchlist</a>
+        <div class="watchlist_status"></div>
+            <h5>Created by {{ listing.user }} </h5>
+            <span class="badge badge-info">On Watchlist</span>
+            <a href="{% url 'watchlist' listing.listing_title %}"><small>Remove from watchlist</small></a>
+        </div>
+    {% else %}
+        <div class="watchlist_status">
+            <h5>Created by {{ listing.user }}</h5>
+            <a href="{% url 'watchlist' listing.listing_title %}"><small>Add to watchlist</small></a>
+            <br>
+        </div>
+    {% endif %}
+    {% if on_watchlist == True %}
+        
         <br>
     {% else %}
-        <a href="{% url 'watchlist' listing.listing_title %}">Add to watchlist</a>
-        <br>
+        
     {% endif %}
     {% if user == listing.user %}
         {% if listing.active == True %}
