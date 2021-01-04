@@ -21,7 +21,7 @@ class NewBid(forms.Form):
     bid = forms.IntegerField(widget=forms.TextInput(attrs={'class' : 'form-control'}))
 
 class NewComment(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'class' : 'form-control'}))
+    your_comment = forms.CharField(widget=forms.Textarea(attrs={'class' : 'form-control'}))
 
 
 def index(request):
@@ -122,7 +122,7 @@ def listing(request, listing):
     listing = Listing.objects.get(listing_title=listing)
     user = request.user
     watchlist = Watchlist.objects.all().filter(user=user, listing=listing)
-    comments = Comment.objects.all()
+    comments = Comment.objects.all().filter(listing=listing)
     if watchlist:
         on_watchlist_id = watchlist[0].id
         on_watchlist = Watchlist.objects.get(id=on_watchlist_id)
@@ -190,7 +190,7 @@ def comment(request, listing):
     if request.method == "POST":
         form = NewComment(request.POST)
         if form.is_valid():
-            comment = form.cleaned_data['comment']
+            comment = form.cleaned_data['your_comment']
             user = request.user
             comment_to_save = Comment(user=user, listing=listing, comment=comment)
             comment_to_save.save()

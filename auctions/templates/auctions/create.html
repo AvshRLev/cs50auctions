@@ -7,8 +7,7 @@
     {% endif %}
     <form action="{% url 'create' %}" method="POST" class="form-group">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit">
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-primary">
     </form>
-    TODO
 {% endblock %}

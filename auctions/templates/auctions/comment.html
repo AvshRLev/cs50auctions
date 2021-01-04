@@ -1,11 +1,18 @@
+{% extends "auctions/layout.html" %}
+
 {% block body %}
 <strong>{{ message }} </strong>    
-<p>{{ listing.listing_title }}</p>
-<img src="{{ listing.listing_image_url }}" width="200px">
+<h2>Comment on: {{ listing.listing_title | capfirst}}</h2>
+{% if listing.listing_image_url %}    
+    <img src="{{ listing.listing_image_url }}" width="200px">
+{% endif %}
 <br><br>
-    <form action="{% url 'comment' listing.listing_title %}" method="POST" class="form-group">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
+    <div class="form-group">
+        <form action="{% url 'comment' listing.listing_title %}" method="POST" class="form-group">
+            {% csrf_token %}
+            {{ form }}
+            <br>
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
 {% endblock %}
