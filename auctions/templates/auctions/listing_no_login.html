@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.listing_title | capfirst }}</h2>
+    {% if listing.listing_category %}
+        <p>Category: {{ listing.listing_category }}</p>
+    {% endif %}
+    <p>Description: {{ listing.listing_description }}</p>
+    <div>
+        {% if listing.active == True %}
+            Current price: {{ listing.current_bid }}
+        {% else %}
+            Final price: {{ listing.current_bid }}
+        {% endif %}
+    </div>
+    {% if listing.listing_image_url %}
+        <br>
+        <img src="{{ listing.listing_image_url }} " width="400px">
+    {% endif %} 
+    <strong><hr></strong>
+    <h5>Comments:</h5>
+    <strong><hr></strong> 
+    {% for comment in comments %}
+        <strong>{{ comment.user }}:</strong> {{ comment.comment }}
+        <br>
+    {% endfor %}
+{% endblock %}

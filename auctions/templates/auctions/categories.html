@@ -1,12 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Categories</h2>
-    <ul>
+    <h2>Categories:</h2>
+    <hr>
     {% for category in categories %}
-        <li><a href="{% url 'category_view' category.listing_category %}">{{ category.listing_category }}</a></li>
+        <button class="btn btn-outline-primary"><a href="{% url 'category_view' category.listing_category %}">{{ category.listing_category }}</button></a>
+        <br><br>
     {% empty %}
-        <li>No categories</li>
+    <button class="btn btn-outline-primary">No categories</button>
     {% endfor %}
-    </ul>
+    
 {% endblock %}

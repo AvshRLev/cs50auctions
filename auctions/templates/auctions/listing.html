@@ -3,32 +3,30 @@
 {% block body %}
     <h2>{{ listing.listing_title | capfirst }}</h2>
     {% if on_watchlist == True %}
-        <div class="watchlist_status"></div>
-            <h5>Created by {{ listing.user }} </h5>
+        <div class="watchlist_status">
+            <h5>Created by {{ listing.user | capfirst }} </h5>
             <span class="badge badge-info">On Watchlist</span>
             <a href="{% url 'watchlist' listing.listing_title %}"><small>Remove from watchlist</small></a>
         </div>
     {% else %}
         <div class="watchlist_status">
-            <h5>Created by {{ listing.user }}</h5>
+            <h5>Created by {{ listing.user | capfirst }}</h5>
             <a href="{% url 'watchlist' listing.listing_title %}"><small>Add to watchlist</small></a>
-            <br>
         </div>
-    {% endif %}
-    {% if on_watchlist == True %}
-        
-        <br>
-    {% else %}
-        
     {% endif %}
     {% if user == listing.user %}
         {% if listing.active == True %}
             <a href="{% url 'close_auction' listing.listing_title %}">Close bid</a>
         {% endif %}
     {% endif %}
-    <strong>{{ message }}</strong>
+    {% if message %}
+        <br>
+        <strong>{{ message }}</strong>
+        <br><br>
+    {% endif %}
+    
     {% if listing.listing_category %}
-        <p>{{ listing.listing_category }}</p>
+        <p>Category: {{ listing.listing_category }}</p>
     {% endif %}
     <p>Description: {{ listing.listing_description }}</p>
     <div>
@@ -38,7 +36,7 @@
             Final price: {{ listing.current_bid }}
         {% endif %}
         {% if listing.active == True %}
-            <a href="{% url 'bid_listing' listing.listing_title %}">Place a Higher Bid</a>
+            <a href="{% url 'bid_listing' listing.listing_title %}"><button class="btn btn-primary btn-sm">Place a Higher Bid</button></a>
         {% else %}
             <strong>This listing is no longer active</strong>
         {% endif %}
@@ -47,12 +45,13 @@
         <br>
         <img src="{{ listing.listing_image_url }} " width="400px">
     {% endif %} 
-    <br>
-    <h2>Comments:</h2>
-    <br> 
+    <strong><hr></strong>
+    <h5>Comments:</h5>
+    <strong><hr></strong> 
     {% for comment in comments %}
-        {{ comment.user }}: {{ comment.comment }}
+        <strong>{{ comment.user }}:</strong> {{ comment.comment }}
         <br>
     {% endfor %}
-    <a href="{% url 'comment' listing.listing_title %}">Add a comment</a>
+    <br>
+    <button class="btn btn-outline-primary btn-sm"><a href="{% url 'comment' listing.listing_title %}">Add a comment</a></button>
 {% endblock %}

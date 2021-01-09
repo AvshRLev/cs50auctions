@@ -1,9 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<strong>{{ message }} </strong>    
+<strong>{{ message }} </strong> 
+<br>
+<strong>Listing: {{ listing.listing_title | capfirst}}</strong>   
 <p>Current price: {{ current_bid }}</p>
-<p>{{ listing.listing_title }}</p>
+
     <form action="{% url 'bid_listing' listing.listing_title %}" method="POST" class="form-group">
         {% csrf_token %}
         {{ form }}

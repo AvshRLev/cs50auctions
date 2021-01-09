@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Inactive Listings</h2>
+    <h2>Closed Listings</h2>
     {% for listing in inactive_listings %}
         <hr>
         <a href="{% url 'listing' listing.listing_title %}"><h2>{{ listing.listing_title | capfirst }}</h2></a>
